@@ -21,14 +21,9 @@ spec:
     spec:
       containers:
       - name: content-server
-        image: content-server:latest
+        image: <IMAGE>
         ports:
         - containerPort: 8080
-        resources:
-          requests:
-            cpu: 100m
-          limits:
-            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
