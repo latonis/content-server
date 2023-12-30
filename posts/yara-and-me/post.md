@@ -22,7 +22,7 @@ In YARA (again, the C one), the Mach-O module was not enabled and compiled with 
 
 This all changed with YARA-X (the one written in Rust). The memory and borrow checker system in Rust allowed for a safer port (is it a port if it is improved?) of the Mach-O module from C into Rust. With the added checking and memory safety, there comes a lot of increased confidence for the module. In fact, the Mach-O module is now included by default into YARA-X when compiled.
 
-![screenshot of GitHub showing the default build features of YARA-X, which included Mach-O module](images/yara-and-me/image.png)
+![screenshot of GitHub showing the default build features of YARA-X, which included Mach-O module](/static/images/yara-and-me/image.png)
 
 This is fantastic news: no messing about with a custom Makefile and no recompiling. Assuming the defaults include Mach-O come release time, users will be able to use Mach-O module straight out of the box instead of it being tucked away in the corner and hidden. 
 
@@ -32,7 +32,7 @@ The Mach-O module may still have a long way to go, but the progress from YARA-X 
 
 MacOS and iOS security folks probably feel pretty closely to how I feel right now:
 
-![The Office celebration gif](images/yara-and-me/celebration.gif)
+![The Office celebration gif](/static/images/yara-and-me/celebration.gif)
 
 Now that we have all of that out of the way, let's dive into what is coming in the near future or currently in progress.
 

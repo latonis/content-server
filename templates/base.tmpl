@@ -3,17 +3,38 @@
 
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet"
+    <!-- <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.0/github-markdown-light.css"
         integrity="sha512-twSIkcOWTg8pO2szOkSwXeumnI79JQ0zVRavBB5cdJvhVFhReF9fBlyFM380P6vKIQ4mlD80EPtuZdSPpqYDgQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        .home {
+            li {
+                margin-top: 1%
+            }
+        }   
+        img, h1, h2, h3, p, li, ul {
+            padding : 0;
+        }
+    </style>
 </head>
 
 <body class="">
     <header>
         {{template "nav" .}}
     </header>
-    {{ template "post" .}}
+    <div style="text-align: center;">
+        {{ if eq "contentserver.Post" (printf "%T" .)}}
+        <div class="post">
+            {{ template "post" .}}
+        </div>
+        {{ else }}
+            <div class="home">
+            {{ template "home" .}}
+            </div>
+        {{ end}}
+    </div>
 </body>
 
 </html>

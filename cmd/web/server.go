@@ -10,13 +10,44 @@ import (
 var posts map[string]contentserver.Post
 
 func main() {
-	r := gin.Default()
+	gin.SetMode(gin.ReleaseMode)
+	r := gin.New()
+	r.Static("/static", "./static")
 	posts = contentserver.GetPosts()
 	r.LoadHTMLGlob("templates/*")
 	r.GET("/ping", GetHandler)
-	r.GET("/:slug", PostHandler)
-	r.Run("localhost:8080")
+	r.GET("/api/v1/posts", AllPostsHandler)
+	r.GET("/", HomeHandler)
+	r.GET("/posts/:slug", PostHandler)
+	r.Run("0.0.0.0:8080")
+}
 
+func HomeHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "base", nil)
+}
+
+func AllPostsHandler(c *gin.Context) {
+	keys := make([]string, len(posts))
+	i := 0
+
+	for k := range posts {
+		if k == "about" {
+			continue
+		}
+		keys[i] = k
+		i++
+	}
+
+	if c.Request.Header.Get("Hx-Request") == "true" {
+		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("<ul>"))
+		for k := range keys {
+			c.HTML(http.StatusOK, "list", keys[k])
+		}
+		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("</ul>"))
+		return
+	}
+
+	c.JSON(http.StatusOK, keys)
 }
 
 func GetHandler(c *gin.Context) {
