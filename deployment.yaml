@@ -24,7 +24,6 @@ spec:
         image: content-server:latest
         ports:
         - containerPort: 8080
-        - hostPort: 80
         resources:
           requests:
             cpu: 100m
@@ -41,6 +40,6 @@ spec:
     - name: http
       protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 8080
   selector:
     app: content-server
