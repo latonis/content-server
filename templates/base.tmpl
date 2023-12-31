@@ -21,6 +21,10 @@
         integrity="sha512-twSIkcOWTg8pO2szOkSwXeumnI79JQ0zVRavBB5cdJvhVFhReF9fBlyFM380P6vKIQ4mlD80EPtuZdSPpqYDgQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/styles/default.min.css">
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    
     <style>
         .home {
             li {
@@ -34,6 +38,21 @@
         img, h1, h2, h3, p, li, ul {
             padding : 0;
         }
+        ol {
+            display: inline-block;
+            text-align: left;
+        }
+        footer {
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            height: 2.5rem; 
+        }
+
+        code {
+            display: inline-block;
+            text-align: left;
+        }
     </style>
 </head>
 
@@ -43,16 +62,18 @@
     </header>
     <div style="text-align: center;">
         {{ if eq "contentserver.Post" (printf "%T" .)}}
-        <div class="post">
-            {{ template "post" .}}
-        </div>
+            <div style="text-align: center" class="post">
+                {{ template "post" .}}
+            </div>
         {{ else }}
             <div class="home">
-            {{ template "home" .}}
+                {{ template "home" .}}
             </div>
         {{ end}}
+        <footer>
+            {{template "footer" .}}
+        </footer>
     </div>
 </body>
-
 </html>
 {{ end }}

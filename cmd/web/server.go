@@ -53,7 +53,8 @@ func CategoriesHandler(c *gin.Context) {
 
 func PostsHandler(c *gin.Context) {
 	postsToSend := posts
-	keys := make([]contentserver.Post, len(postsToSend))
+	// remove about page from posts
+	keys := make([]contentserver.Post, len(postsToSend)-1)
 	i := 0
 
 	if c.Query("category") != "" {
