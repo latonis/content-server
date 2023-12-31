@@ -6,9 +6,8 @@ y'all like load commands?
 As with any feature implementation, I started with a use case. Back in my original [post](https://jacoblatonis.me/posts/yara-and-me) about YARA-X development, I noted about opportunities to cluster binaries based on specific attributes. As I was digging through relevant **Mach-O** `load_commands` for this, I thought the **UUID** load command would be a great starting place. There's a few reasons for my thinking on this being a great starting place: 
 
 1. it is a single field
-2. it *should be* in every Mach-O binary
-3. it can be spoofed
-4. easy to detect on
+2. it can be spoofed
+3. easy to detect on
 
 With my reasoning laid out above, let's dive into what it takes to implement it.
 
