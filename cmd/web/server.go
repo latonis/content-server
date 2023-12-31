@@ -13,6 +13,7 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.Static("/static", "./static")
+	r.StaticFile("/favicon.png", "./static/favicon.png")
 	posts = contentserver.GetPosts()
 	r.LoadHTMLGlob("templates/*")
 	r.GET("/ping", GetHandler)

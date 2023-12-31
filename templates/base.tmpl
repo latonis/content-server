@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <link rel=icon href="/favicon.png" sizes="16x16" type="image/png">
     <meta charset="utf-8">
     {{ if eq "contentserver.Post" (printf "%T" .)}}
         <meta name="author" content="Jacob Latonis">
@@ -11,7 +12,6 @@
         <meta name="twitter:creator" content="@jacoblatonis">
         <meta name="twitter:title" content="{{ .Meta.Title }}">
         <meta name="twitter:card" content="summary">
-
     {{ else }}
         <title> Jacob's Musings </title>
     {{ end  }}
