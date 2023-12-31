@@ -1,6 +1,13 @@
 {{ define "home" }}
 <h1>Posts</h1>
-<div hx-get="/api/v1/posts" hx-trigger="load">
+<div hx-get="/api/v1/posts" hx-trigger="load" id="posts">
     Posts loading ...
+</div>
+
+<div>
+    <h2>Posts by category</h2>
+    <div hx-get="/api/v1/posts/categories" hx-trigger="load">
+        Categories loading ...
+    </div>
 </div>
 {{ end }}

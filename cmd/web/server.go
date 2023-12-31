@@ -8,41 +8,70 @@ import (
 )
 
 var posts map[string]contentserver.Post
+var categories []string
+var postsByCategory map[string][]contentserver.Post
+
+type Link struct {
+	Ref string
+	Val string
+	Htmx bool
+	Target string
+}
 
 func main() {
-	gin.SetMode(gin.ReleaseMode)
-	r := gin.New()
+	// gin.SetMode(gin.ReleaseMode)
+	r := gin.Default()
 	r.Static("/static", "./static")
 	r.StaticFile("/favicon.png", "./static/favicon.png")
 	posts = contentserver.GetPosts()
+	categories = contentserver.GetCategories(&posts)
+	postsByCategory = contentserver.PostsByCategory(&posts)
 	r.LoadHTMLGlob("templates/*")
 	r.GET("/ping", GetHandler)
-	r.GET("/api/v1/posts", AllPostsHandler)
+	r.GET("/api/v1/posts", PostsHandler)
+	r.GET("/api/v1/posts/categories", CategoriesHandler)
 	r.GET("/", HomeHandler)
 	r.GET("/posts/:slug", PostHandler)
-	r.Run("0.0.0.0:8080")
+	r.Run("localhost:8080")
 }
 
 func HomeHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "base", nil)
 }
 
-func AllPostsHandler(c *gin.Context) {
-	keys := make([]string, len(posts))
+func CategoriesHandler(c *gin.Context) {
+	if c.Request.Header.Get("Hx-Request") == "true" {
+		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("<ul>"))
+		for k := range categories {
+			c.HTML(http.StatusOK, "list", Link{"/api/v1/posts?category=" + categories[k], categories[k], true, "#posts"})
+		}
+		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("</ul>"))
+		return
+	}
+	c.JSON(http.StatusOK, categories)
+}
+
+func PostsHandler(c *gin.Context) {
+	postsToSend := posts
+	keys := make([]contentserver.Post, len(postsToSend))
 	i := 0
 
-	for k := range posts {
-		if k == "about" {
-			continue
+	if c.Query("category") != "" {
+		keys = postsByCategory[c.Query("category")]
+	} else {
+		for k := range postsToSend {
+			if k == "about" {
+				continue
+			}
+			keys[i] = posts[k]
+			i++
 		}
-		keys[i] = k
-		i++
 	}
 
 	if c.Request.Header.Get("Hx-Request") == "true" {
 		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("<ul>"))
 		for k := range keys {
-			c.HTML(http.StatusOK, "list", keys[k])
+			c.HTML(http.StatusOK, "list", Link{"/posts/" + keys[k].Slug, keys[k].Slug, false, ""})
 		}
 		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("</ul>"))
 		return

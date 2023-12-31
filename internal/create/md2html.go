@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"os"
+	"slices"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/ast"
@@ -68,6 +69,32 @@ func GetPosts() map[string]Post {
 		}
 	}
 	return posts
+}
+
+func PostsByCategory(posts *map[string]Post) map[string][]Post {
+	postsByCategory := make(map[string][]Post)
+
+	for _, post := range *posts {
+		for _, category := range post.Meta.Categories {
+			postsByCategory[category] = append(postsByCategory[category], post)
+		}
+	}
+
+	return postsByCategory
+}
+
+func GetCategories(posts *map[string]Post) []string {
+	categories := make([]string, 0)
+
+	for _, post := range *posts {
+		for _, category := range post.Meta.Categories {
+			if !slices.Contains(categories, category) {
+				categories = append(categories, category)
+			}
+		}
+	}
+
+	return categories
 }
 
 func GetBody(path string) template.HTML {
