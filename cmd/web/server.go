@@ -12,14 +12,14 @@ var categories []string
 var postsByCategory map[string][]contentserver.Post
 
 type Link struct {
-	Ref string
-	Val string
-	Htmx bool
+	Ref    string
+	Val    string
+	Htmx   bool
 	Target string
 }
 
 func main() {
-	// gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.Static("/static", "./static")
 	r.StaticFile("/favicon.png", "./static/favicon.png")
@@ -32,7 +32,7 @@ func main() {
 	r.GET("/api/v1/posts/categories", CategoriesHandler)
 	r.GET("/", HomeHandler)
 	r.GET("/posts/:slug", PostHandler)
-	r.Run("localhost:8080")
+	r.Run("0.0.0.0:8080")
 }
 
 func HomeHandler(c *gin.Context) {
