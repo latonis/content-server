@@ -3,6 +3,14 @@
 
 <head>
     <meta charset="utf-8">
+    {{ if eq "contentserver.Post" (printf "%T" .)}}
+        <meta name="author" content="Jacob Latonis">
+        <meta name="description" content="{{ .Meta.Description }}">
+        <title> {{.Meta.Title}} | Jacob's Musings</title>
+    {{ else }}
+        <title> Jacob's Musings </title>
+    {{ end  }}
+
     <!-- <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.0/github-markdown-light.css"
         integrity="sha512-twSIkcOWTg8pO2szOkSwXeumnI79JQ0zVRavBB5cdJvhVFhReF9fBlyFM380P6vKIQ4mlD80EPtuZdSPpqYDgQ=="
@@ -14,6 +22,10 @@
                 margin-top: 1%
             }
         }   
+        img {
+            max-width: 60%;
+            height: auto;
+        }
         img, h1, h2, h3, p, li, ul {
             padding : 0;
         }

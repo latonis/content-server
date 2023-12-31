@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  blog:
+    image: "registry.digitalocean.com/registry-101/content-server:latest"
+    ports:
+      - "8080:8080"
