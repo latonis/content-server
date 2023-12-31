@@ -241,6 +241,12 @@ import "macho"
 
 rule MachoUUID {
     condition:
-        macho.uuid == "0443555D-A992-3B9E-8BCE-5D9FC8BAC0E9"
+		for any file in macho.file : (
+			file.uuid == "0443555D-A992-3B9E-8BCE-5D9FC8BAC0E9"
+		)
 }
 ```
+
+and boom! it matches
+
+![terminal screenshot showing the yara rule matching](/static/images/100-days-of-yara-2024-day-01/confirm.png)
