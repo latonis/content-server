@@ -1,9 +1,8 @@
-title: "100 Days of Yara in 2024: Day 01"
+title: "100 Days of Yara in 2024: Day 02"
 description: "Let's start parsing those UUIDs from Mach-O binaries in YARA-X."
-date: '2024-01-01'
+date: '2024-01-02'
 categories:
-    - YARA
     - YARA-X
     - 100-days-of-yara
-    - Mach-O
-    - Load_Command
+    - Open Source
+    - Maintenance
