@@ -1,6 +1,6 @@
 # 100 Days of Yara in 2024: Day 02
 My first post for #100DaysofYARA showed how to contribute to YARA-X, the open source tool written in Rust that we all know and love. There's a lot of fun in thinking up ideas and implementing new features for tools, especially in the open source community. However, I think a spotlight needs to be put on the maintenance and chore aspect as well, because it takes a lot of effort in that regard to (shoutout to 
-[Victor M. Alvarez](https://github.com/plusvic), author and maintainer of YARA and its lovely ecosystem).
+[Victor M. Alvarez](https://github.com/plusvic), author and maintainer of YARA and its lovely ecosystem). This post just highlights some of the maintenance work required in a repository like this, as I found some chores to do yesterday!
 
 ## Motivation
 There's a LOT of moving parts in a project, open source or not. However, there's not always folks being paid to maintain the software that we know and love. In YARA's case, I believe it is worked on as part of @plusvic's role at Google/VirusTotal, which is awesome. However, if you want to get into contributing to open source, you can do that in more ways than just new features :).
@@ -20,7 +20,7 @@ Knowing this, it's probably a good idea to see if we can get the repository off 
 
 ![screenshot of the use-cases section in the repository](/static/images/100-days-of-yara-2024-day-02/use-cases.png)
 
-Evaluating the use cases listed above, the purpose of this action in YARA-X's case is to run the tests. We have other workflows and steps to check warnings, errors, and formatting. As such, I made a change to alter the workflow to just use `run: cargo test` instead of using the deprecated and archived action.
+Evaluating the use-cases listed above, the purpose of this action in YARA-X's case is to run the tests. We have other workflows and steps to check warnings, errors, and formatting. As such, I made a change to alter the workflow to just use `run: cargo test` instead of using the deprecated and archived action.
 
 ### Old Step
 ```yaml
