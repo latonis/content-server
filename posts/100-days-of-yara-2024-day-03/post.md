@@ -33,9 +33,9 @@ integer_lit = @{
 Breaking this down, the current grammar looks for an integer as such:
 1. is it negative or positive: `"-"?`
 2. after the sign (or lackthereof), is there a hex or octal identifier: `"0x"` or `"0o"`
-   1. if so, are the digits in the alphabet for the appropriate set: `ASCII_HEX_DIGIT` or `ASCII_OCT_DIGIT` and are there at least one of them `+`
-3. if no octal or hex identifier, is it all ascii digits? `ASCII_DIGIT+`
-4. is there a file size notation at the end `("KB" | "MB")?`
+3. if so, are the digits in the alphabet for the appropriate set: `ASCII_HEX_DIGIT` or `ASCII_OCT_DIGIT` and are there at least one of them `+`
+4. if no octal or hex identifier, is it all ascii digits? `ASCII_DIGIT+`
+5. is there a file size notation at the end `("KB" | "MB")?`
 
 #### Floats
 
@@ -66,11 +66,11 @@ integer_lit = @{
 Breaking this down, the proposed grammar looks for an integer as such:
 1. is it negative or positive: `"-"?`
 2. after the sign (or lackthereof), is there a hex or octal identifier: `"0x"` or `"0o"`
-   1. if so, are the digits in the alphabet for the appropriate set: `ASCII_HEX_DIGIT` or `ASCII_OCT_DIGIT` and are there at least one of them `+`
-   2. **are there any underscores or digits following the first digit?: `("_" | ASCII_HEX_DIGIT)*` or `("_" | ASCII_OCT_DIGIT)*`**
-3. if no octal or hex identifier, is it** at least one ascii digit**? `ASCII_DIGIT+`
-   1. **if at least one, are there any underscores or digits following the first digit?**: `("_" | ASCII_DIGIT)`
-4. is there a file size notation at the end `("KB" | "MB")?`
+3. if so, are the digits in the alphabet for the appropriate set: `ASCII_HEX_DIGIT` or `ASCII_OCT_DIGIT` and are there at least one of them `+`
+4. **are there any underscores or digits following the first digit?: `("_" | ASCII_HEX_DIGIT)*` or `("_" | ASCII_OCT_DIGIT)*`**
+5. if no octal or hex identifier, is it** at least one ascii digit**? `ASCII_DIGIT+`
+6. **if at least one, are there any underscores or digits following the first digit?**: `("_" | ASCII_DIGIT)`
+7. is there a file size notation at the end `("KB" | "MB")?`
 
 #### Floats
 
@@ -83,10 +83,10 @@ float_lit = @{
 Breaking this down, the proposed grammar looks for a float as such:
 1. is it negative or positive: `"-"?`
 2. is there at least one decimal digit: `ASCII_DIGIT+`
-   1. **if so, is there an underscore or another decimal digit?**: `("_" | ASCII_DIGIT)* `
-3. is there then a dot (.): `DOT`
-4. is there then at least one decimal digit again: `ASCII_DIGIT+`
-   1. **if so, is there an underscore or another decimal digit?**: `("_" | ASCII_DIGIT)* `
+3. **if so, is there an underscore or another decimal digit?**: `("_" | ASCII_DIGIT)* `
+4. is there then a dot (.): `DOT`
+5. is there then at least one decimal digit again: `ASCII_DIGIT+`
+6. **if so, is there an underscore or another decimal digit?**: `("_" | ASCII_DIGIT)* `
 
    
 ## Checking the Work
