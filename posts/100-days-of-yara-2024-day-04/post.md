@@ -10,6 +10,8 @@ I'd like to continue that trend of parsing more data from the Mach-O binaries th
 
 These pieces of metadata can be used to comb through numerous binaries and only find specific ones, filter out older (or newer) compiled binaries, and a lot more. I think there's some potential here for clustering too with combining it with other information that we can glean from development environments of TAs.
 
+For context on the purpose of this data in Mach-O files, it allows the developer to set what versions of the OS the application *should* run on. It could be based on calling system APIs only available or up to a certain version OR it could be arbitrary and just selected during the development cycle. Regardless, it is still an interesting piece of metadata we should have access to when writing YARA rules.
+
 ## Structure
 The load commands all follow the same structure, the only difference is the actual initial `load_command` value that lets us know which device the data is for: macOS, iPhoneOS, WatchOS, or TVOS.
 We'll open up that [`loader.h`](https://opensource.apple.com/source/xnu/xnu-2050.18.24/EXTERNAL_HEADERS/mach-o/loader.h) file for the Mach-O header for reference.
