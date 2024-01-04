@@ -1,8 +1,9 @@
 title: "100 Days of Yara in 2024: Day 02"
-description: "Let's start parsing those UUIDs from Mach-O binaries in YARA-X."
+description: "Chores and More!"
 date: '2024-01-02'
 categories:
     - YARA-X
     - 100-days-of-yara
     - Open Source
     - Maintenance
+    - 100-days-of-yara-2024
