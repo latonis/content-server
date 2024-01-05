@@ -86,7 +86,7 @@ fn parse_rpath_command(
         swap_rpath_command(&mut rp);
     }
 
-    let (input, path) = take(cmdsize - offset)(input)?;
+    let (input, path) = take(rp.cmdsize - rp.offset)(input)?;
 
     rp.path = path.into();
 
