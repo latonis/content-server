@@ -3,7 +3,7 @@ I have some more load commands to parse! This time, we're covering `LC_BUILD_VER
 
 
 ## The Data Layout
-Again, we are going to use our trusty [`loader.h`](https://opensource.apple.com/source/xnu/xnu-2050.18.24/EXTERNAL_HEADERS/mach-o/loader.h) file for Mach-O binaries. It indentifiers 
+Again, we are going to use our trusty [`loader.h`](https://opensource.apple.com/source/xnu/xnu-4570.1.46/EXTERNAL_HEADERS/mach-o/loader.h.auto.html) file for Mach-O binaries. It indentifiers 
 ```c
 /*
  * The build_version_command contains the min OS version on which this
