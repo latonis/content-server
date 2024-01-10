@@ -79,7 +79,7 @@ func PostsHandler(c *gin.Context) {
 	if c.Request.Header.Get("Hx-Request") == "true" {
 		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("<ul>"))
 		for k := range keys {
-			c.HTML(http.StatusOK, "list", Link{"/posts/" + keys[k].Slug, keys[k].Slug, false, ""})
+			c.HTML(http.StatusOK, "list", Link{"/posts/" + keys[k].Slug, keys[k].Meta.Title, false, ""})
 		}
 		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("</ul>"))
 		return
