@@ -10,6 +10,7 @@ import (
 var posts map[string]contentserver.Post
 var categories []string
 var postsByCategory map[string][]contentserver.Post
+var YARAPosts2024 []contentserver.Post
 
 type Link struct {
 	Ref    string
@@ -26,6 +27,8 @@ func main() {
 	posts = contentserver.GetPosts()
 	categories = contentserver.GetCategories(&posts)
 	postsByCategory = contentserver.PostsByCategory(&posts)
+	YARAPosts2024 = contentserver.GetYARAPosts(postsByCategory["100-days-of-yara-2024"])
+
 	r.LoadHTMLGlob("templates/*")
 	r.GET("/ping", GetHandler)
 	r.GET("/api/v1/posts", PostsHandler)
@@ -58,7 +61,11 @@ func PostsHandler(c *gin.Context) {
 	i := 0
 
 	if c.Query("category") != "" {
-		keys = postsByCategory[c.Query("category")]
+		if c.Query("category") == "100-days-of-yara-2024" {
+			keys = YARAPosts2024
+		} else {
+			keys = postsByCategory[c.Query("category")]
+		}
 	} else {
 		for k := range postsToSend {
 			if k == "about" {

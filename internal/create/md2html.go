@@ -5,6 +5,9 @@ import (
 	"html/template"
 	"os"
 	"slices"
+	"sort"
+	"strings"
+	"time"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/ast"
@@ -15,7 +18,7 @@ import (
 
 type PostMeta struct {
 	Title       string   `yaml:"title"`
-	Date        string   `yaml:"date"`
+	Date        MetaDate `yaml:"date"`
 	Categories  []string `yaml:"categories"`
 	Description string   `yaml:"description"`
 }
@@ -83,6 +86,19 @@ func PostsByCategory(posts *map[string]Post) map[string][]Post {
 	return postsByCategory
 }
 
+func GetYARAPosts(posts []Post) []Post {
+
+	sort.SliceStable(posts, func(i, j int) bool {
+		return posts[i].Meta.Date.Time.Compare(posts[j].Meta.Date.Time) == -1
+	})
+
+	for _, post := range posts {
+		fmt.Println(post.Meta.Title)
+	}
+	
+	return posts
+}
+
 func GetCategories(posts *map[string]Post) []string {
 	categories := make([]string, 0)
 
@@ -106,6 +122,26 @@ func GetBody(path string) template.HTML {
 
 	return getHTML(data)
 
+}
+
+type MetaDate struct {
+	Time time.Time `yaml:"date"`
+}
+
+func (t *MetaDate) UnmarshalYAML(unmarshal func(interface{}) error) error {
+
+	var buf string
+	err := unmarshal(&buf)
+	if err != nil {
+		return nil
+	}
+
+	tt, err := time.Parse("2006-01-02", strings.TrimSpace(buf))
+	if err != nil {
+		return err
+	}
+	t.Time = tt
+	return nil
 }
 
 func GetMeta(path string) *PostMeta {
