@@ -71,6 +71,7 @@ func GetPosts() map[string]Post {
 			posts[postSlug] = *post
 		}
 	}
+
 	return posts
 }
 
@@ -83,6 +84,12 @@ func PostsByCategory(posts *map[string]Post) map[string][]Post {
 		}
 	}
 
+	for category := range postsByCategory {
+		sort.SliceStable(postsByCategory[category], func(i, j int) bool {
+			return postsByCategory[category][i].Meta.Date.Time.Compare(postsByCategory[category][j].Meta.Date.Time) == -1
+		})
+	}
+
 	return postsByCategory
 }
 
@@ -92,10 +99,6 @@ func GetYARAPosts(posts []Post) []Post {
 		return posts[i].Meta.Date.Time.Compare(posts[j].Meta.Date.Time) == -1
 	})
 
-	for _, post := range posts {
-		fmt.Println(post.Meta.Title)
-	}
-	
 	return posts
 }
 
