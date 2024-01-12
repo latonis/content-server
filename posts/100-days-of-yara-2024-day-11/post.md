@@ -68,28 +68,32 @@ fn convert_to_source_version_string(decimal_number: u64) -> String {
 ### Handling Function
 The handling function involves some error checking, invoking the parsing function, and setting the relevant details in the protobuf representation.
 ```rust
-/// Parse a Mach-O SourceVersionCommand, transforming raw bytes into a
-/// structured format.
-///
-/// # Arguments
-///
-/// * `input`: A slice of bytes containing the raw SourceVersionCommand data.
-///
-/// # Returns
-///
-/// A `nom` IResult containing the remaining unparsed input and the parsed
-/// SourceVersionCommand structure, or a `nom` error if the parsing fails.
-///
-/// # Errors
-///
-/// Returns a `nom` error if the input data is insufficient or malformed.
-fn parse_source_version_command(
-    input: &[u8],
-) -> IResult<&[u8], SourceVersionCommand> {
-    let (input, cmd) = le_u32(input)?;
-    let (input, cmdsize) = le_u32(input)?;
-    let (input, version) = le_u64(input)?;
-    Ok((input, SourceVersionCommand { cmd, cmdsize, version }))
+fn handle_source_version_command(
+    command_data: &[u8],
+    size: usize,
+    macho_file: &mut File,
+) -> Result<(), MachoError> {
+    if size < std::mem::size_of::<SourceVersionCommand>() {
+        return Err(MachoError::FileSectionTooSmall(
+            "SourceVersion".to_string(),
+        ));
+    }
+
+    let (_, mut sv) = parse_source_version_command(command_data)
+        .map_err(|e| MachoError::ParsingError(format!("{:?}", e)))?;
+
+    if should_swap_bytes(
+        macho_file
+            .magic
+            .ok_or(MachoError::MissingHeaderValue("magic".to_string()))?,
+    ) {
+        swap_source_version_command(&mut sv);
+    };
+
+    macho_file.source_version =
+        Some(convert_to_source_version_string(sv.version));
+
+    Ok(())
 }
 ```
 
