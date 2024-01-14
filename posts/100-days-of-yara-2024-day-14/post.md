@@ -2,7 +2,10 @@
 [Day 12](https://jacoblatonis.me/posts/100-days-of-yara-2024-day-12) and [Day 13](https://jacoblatonis.me/posts/100-days-of-yara-2024-day-13) focused on parsing `LC_DYSYMTAB` and `LC_SYMTAB` load commands so we could get the data needed to perform the offset calculations to parse the symbol tables and the string tables in Mach-O binaries. Now that those are being parsed, we can focus on parsing the string table today.
 
 When looking at a hex dump of a Mach-O binary, you may notice there are a few blobs of strings in there. The one we're focused on parsing today are a designated area defined by `LC_SYMTAB`. 
-![portion of a hex dump of a Mach-O binary](/static/images/100-days-of-yara-2024-day-14/hexdump.png). This is not the same as the `__cstring` section, we'll parse that later.
+
+![portion of a hex dump of a Mach-O binary](/static/images/100-days-of-yara-2024-day-14/hexdump.png).
+
+This is not the same as the `__cstring` section, we'll parse that later.
 
 ## The Data Layout
 The data layout of the string table designated by `LC_SYMTAB` is a blob of strings that are separated by a null byte (`b'\0'`)
