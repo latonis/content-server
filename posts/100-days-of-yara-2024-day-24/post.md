@@ -27,6 +27,7 @@ You can change the source entries to be wherever you store your yara rules or ma
 
 ## Prepping the devcontainer
 The devcontainer handles almost everything. We still need to build the project though, either in debug mode or release mode. To start, let's get the devcontainer created. Press `CMD + SHIFT + P` to bring open the VS Code run window, then type `reopen in container` and the following should show:
+
 ![dev container VSCode prompt](/static/images/100-days-of-yara-2024-day-24/prompt.png)
 
 Selecting this allows you to build the devcontainer and open the repository in it.
