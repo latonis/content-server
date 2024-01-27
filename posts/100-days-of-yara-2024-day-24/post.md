@@ -26,7 +26,10 @@ This is where the `mounts` section of the [`devcontainer.json`](https://gist.git
 You can change the source entries to be wherever you store your yara rules or malware samples that you'd like to test. They'll be available in your devcontainer at `/home/vscode/yara/`.
 
 ## Prepping the devcontainer
-The devcontainer handles almost everything. We still need to build the project though, either in debug mode or release mode. To start, let's get the devcontainer created. Press `CMD + SHIFT + P` to bring open the VS Code run window, then type `reopen in container` and the following should show: ![dev container VSCode prompt](/static/images/100-days-of-yara-2024-day-24/prompt.png). Selecting this allows you to build the devcontainer and open the repository in it.
+The devcontainer handles almost everything. We still need to build the project though, either in debug mode or release mode. To start, let's get the devcontainer created. Press `CMD + SHIFT + P` to bring open the VS Code run window, then type `reopen in container` and the following should show:
+![dev container VSCode prompt](/static/images/100-days-of-yara-2024-day-24/prompt.png)
+
+Selecting this allows you to build the devcontainer and open the repository in it.
 
 We then need to access our shell in our devcontainer, which VS Code opens for you when attaching to the session.
 
