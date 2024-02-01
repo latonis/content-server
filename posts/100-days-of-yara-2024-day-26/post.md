@@ -30,7 +30,7 @@ cargo build
 
 You will be presented with the following if it is successful:
 
-![good bulild in cargo](/static/images/100-days-of-yara-2024-day-26/good.png)
+![good build in cargo](/static/images/100-days-of-yara-2024-day-26/good.png)
 
 ## Adding the build directory to your PATH
 To be able to call our latest build from anywhere, let's add the debug build path to our PATH environment (if you're using `bash`).
