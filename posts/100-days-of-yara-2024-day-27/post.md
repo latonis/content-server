@@ -16,7 +16,7 @@ You also need to install OpenSSL for Windows: https://slproweb.com/products/Win3
 After installing OpenSSL, you need to set an environment variable in Git bash:
 
 ```bash
-export OPENSSL_DIR="C:\Program Files\OpenSSL-win64"
+export OPENSSL_DIR="C:\Program Files\OpenSSL-Win64"
 ```
 
 ## Cloning the repo
