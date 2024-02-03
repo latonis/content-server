@@ -1,4 +1,4 @@
-# 100 Days of Yara in 2024: Day 29
+# 100 Days of Yara in 2024: Day 30
 In [Day 28](https://jacoblatonis.me/posts/100-days-of-yara-2024-day-28), I mentioned the parsing and structure of the module changed a fair amount. As such, I wanted to show folks how that parsing may have changed when looking at old structure versus the new structure. I have some old work that needs to be reworked into the new format, so I have a perfect example to show!
 
 ## Original Way
