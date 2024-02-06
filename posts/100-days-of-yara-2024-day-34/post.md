@@ -1,4 +1,4 @@
-# 100 Days of Yara in 2024: Day 31
+# 100 Days of Yara in 2024: Day 34
 Following the theme of the last few days of my [#100DaysofYARA](https://twitter.com/hashtag/100DaysofYARA?src=hashtag_click) posts, I am once again refactoring a portion of a PR to follow the new parsing format and methodology for the Mach-O module and YARA-X.
 
 ## Original Way
