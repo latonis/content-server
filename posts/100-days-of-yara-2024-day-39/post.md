@@ -1,4 +1,4 @@
-# 100 Days of Yara in 2024: Day 38
+# 100 Days of Yara in 2024: Day 39
 Following the theme of the last few days of my [#100DaysofYARA](https://twitter.com/hashtag/100DaysofYARA?src=hashtag_click) posts, I am once again refactoring a portion of a PR to follow the new parsing format and methodology for the Mach-O module and YARA-X. If you remember way back in [Day 04](https://jacoblatonis.me/posts/100-days-of-yara-2024-day-04), I parsed out the `LC_VERSION_MIN_*` load commands. Unfortunately, it now needs to be refactored as the PR ([#56](https://github.com/VirusTotal/yara-x/pull/56/files)) wasn't merged in before the refactor. As such, we have some work to do!
 
 ## Original Way
