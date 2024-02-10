@@ -3,6 +3,7 @@ Way back in [Day 23](https://jacoblatonis.me/posts/100-days-of-yara-2024-day-23)
 
 ## Implementing the Function
 This part hasn't changed for implementation, it still exists in `mod.rs` for the Mach-O module.
+
 ```rust
 /// The function for checking if a given entitlement is present in the main Mach-O or embedded Mach-O files
 ///
