@@ -174,6 +174,7 @@ I was able to get the first node parsed with the following code:
 ```
 
 The code above allows me to parse out the first node of the trie:
+
 ```
 Terminal Size: 0x0
 Branches: 0x1
