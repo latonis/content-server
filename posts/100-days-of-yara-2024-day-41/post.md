@@ -151,6 +151,36 @@ I'm working on getting this process described formally and having a proof-of-con
 
 Stay tuned!
 
+I was able to get the first node parsed with the following code:
+
+```rust
+    let (remainder, size) = uleb128()(data)?;
+
+    println!("Terminal Size: {:#02x}", size);
+
+    let (remainder, child_count) = u8(remainder)?;
+
+    println!("Branches: {:#02x}", child_count);
+
+    let (remainder, strr) = map(
+        tuple((take_till(|b| b == b'\x00'), tag(b"\x00"))),
+        |(s, _)| s,
+    )(remainder)?;
+
+    println!("Node Label: {}", BStr::new(strr));
+
+    let (remainder, offset) = uleb128()(remainder)?;
+    println!("Node Offset: {:#02x}", offset);
+```
+
+The code above allows me to parse out the first node of the trie:
+```
+Terminal Size: 0x0
+Branches: 0x1
+Node Label: _
+Node Offset: 0x5
+```
+
 ## Sources Used
 -  https://opensource.apple.com/source/xnu/xnu-4570.1.46/EXTERNAL_HEADERS/mach-o/loader.h.auto.html
 - https://opensource.apple.com/source/dyld/dyld-852/dyld3/MachOAnalyzer.cpp.auto.html
