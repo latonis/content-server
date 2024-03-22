@@ -7,12 +7,14 @@ To get started, you need YARA-X cloned locally. This can be done with `git clone
 Once cloned, navigate into the directory with `cd yara-x`. Once in the repository, we can set up a virtual environment with `python -m venv .venv` and activate it with `source ./venv/bin/activate`.
 
 You'll know it is activated when you see the `(.venv)` in your shell:
+
 ![venv output](/static/images/yara-x-bindings-py/venv.png)
 
 Once activated, let's install the dependencies we need:
 `pip install maturin`.
 
 To build, we can run `maturin develop --manifest-path py/Cargo.toml`. You'll be presented with something like this:
+
 ![maturin output](/static/images/yara-x-bindings-py/maturin.png)
 
 Once finished, to test if we successfully see `yara_x` installed and its features, we can run `python` to start an interactive session.
