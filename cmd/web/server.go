@@ -34,6 +34,7 @@ func main() {
 	r.GET("/api/v1/posts", PostsHandler)
 	r.GET("/api/v1/posts/categories", CategoriesHandler)
 	r.GET("/", HomeHandler)
+	r.HEAD("/", HomeHandler)
 	r.GET("/posts/:slug", PostHandler)
 	r.Run("0.0.0.0:8080")
 }
