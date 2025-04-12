@@ -7,7 +7,7 @@ import (
 	"slices"
 	"sort"
 
-	contentserver "contentserver/internal/posts"
+	contentserver "contentserver/internal/handlers"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/ast"
@@ -16,63 +16,84 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func mdToHTML(md []byte, printAst bool) []byte {
+func readFile(path string) ([]byte, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read file %s: %w", path, err)
+	}
+	return data, nil
+}
+
+func mdToHTML(md []byte, printAst bool) ([]byte, error) {
 	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
 	p := parser.NewWithExtensions(extensions)
 	doc := p.Parse(md)
 
 	if printAst {
-		fmt.Print("--- AST tree:\n")
+		fmt.Println("--- AST tree:")
 		ast.Print(os.Stdout, doc)
-		fmt.Print("\n")
+		fmt.Println()
 	}
 
 	htmlFlags := html.CommonFlags | html.HrefTargetBlank
 	opts := html.RendererOptions{Flags: htmlFlags}
 	renderer := html.NewRenderer(opts)
 
-	return markdown.Render(doc, renderer)
+	return markdown.Render(doc, renderer), nil
 }
 
-func getHTML(markdown []byte) template.HTML {
-	return template.HTML(mdToHTML(markdown, false))
+func getHTML(markdown []byte) (template.HTML, error) {
+	htmlBytes, err := mdToHTML(markdown, false)
+	if err != nil {
+		return "", err
+	}
+	return template.HTML(htmlBytes), nil
 }
 
-func GetPosts(postsDir string) map[string]contentserver.Post {
+func GetPosts(postsDir string) (map[string]contentserver.Post, error) {
 	posts := make(map[string]contentserver.Post)
 	files, err := os.ReadDir(postsDir)
-	fmt.Println("Reading posts from: ", postsDir)
-	
 	if err != nil {
-		fmt.Println(err)
+		return nil, fmt.Errorf("failed to read posts directory %s: %w", postsDir, err)
 	}
 
 	for _, f := range files {
-		fmt.Println("Reading post: ", f.Name())
 		if f.IsDir() {
 			postSlug := f.Name()
-			posts[postSlug] = GetPost(postsDir, postSlug)
+			post, err := GetPost(postsDir, postSlug)
+			if err != nil {
+				return nil, fmt.Errorf("failed to get post %s: %w", postSlug, err)
+			}
+			posts[postSlug] = post
 		}
 	}
 
-	return posts
+	return posts, nil
 }
 
-func GetPost(postsDir string, slug string) contentserver.Post {
-	post := new(contentserver.Post)
-	post.Slug = slug
-	meta := GetMeta(postsDir + "/" + slug + "/meta.yaml")
-	body := GetBody(postsDir + "/" + slug + "/post.md")
-	post.Meta = *meta
-	post.Body = body
+func GetPost(postsDir, slug string) (contentserver.Post, error) {
+	meta, err := GetMeta(fmt.Sprintf("%s/%s/meta.yaml", postsDir, slug))
+	if err != nil {
+		return contentserver.Post{}, fmt.Errorf("failed to get metadata for post %s: %w", slug, err)
+	}
 
-	return *post
+	body, err := GetBody(fmt.Sprintf("%s/%s/post.md", postsDir, slug))
+	if err != nil {
+		return contentserver.Post{}, fmt.Errorf("failed to get body for post %s: %w", slug, err)
+	}
+
+	return contentserver.Post{
+		Slug: slug,
+		Meta: *meta,
+		Body: body,
+	}, nil
 }
 
-func PostsByCategory(posts *map[string]contentserver.Post) map[string][]contentserver.Post {
+// Groups posts by their categories
+func PostsByCategory(posts map[string]contentserver.Post) map[string][]contentserver.Post {
 	postsByCategory := make(map[string][]contentserver.Post)
 
-	for _, post := range *posts {
+	for _, post := range posts {
 		for _, category := range post.Meta.Categories {
 			postsByCategory[category] = append(postsByCategory[category], post)
 		}
@@ -80,7 +101,7 @@ func PostsByCategory(posts *map[string]contentserver.Post) map[string][]contents
 
 	for category := range postsByCategory {
 		sort.SliceStable(postsByCategory[category], func(i, j int) bool {
-			return postsByCategory[category][i].Meta.Date.Time.Compare(postsByCategory[category][j].Meta.Date.Time) == -1
+			return postsByCategory[category][i].Meta.Date.Time.Before(postsByCategory[category][j].Meta.Date.Time)
 		})
 	}
 
@@ -88,18 +109,16 @@ func PostsByCategory(posts *map[string]contentserver.Post) map[string][]contents
 }
 
 func GetYARAPosts(posts []contentserver.Post) []contentserver.Post {
-
 	sort.SliceStable(posts, func(i, j int) bool {
-		return posts[i].Meta.Date.Time.Compare(posts[j].Meta.Date.Time) == -1
+		return posts[i].Meta.Date.Time.After(posts[j].Meta.Date.Time)
 	})
-
 	return posts
 }
 
-func GetCategories(posts *map[string]contentserver.Post) []string {
+func GetCategories(posts map[string]contentserver.Post) []string {
 	categories := make([]string, 0)
 
-	for _, post := range *posts {
+	for _, post := range posts {
 		for _, category := range post.Meta.Categories {
 			if !slices.Contains(categories, category) {
 				categories = append(categories, category)
@@ -110,29 +129,24 @@ func GetCategories(posts *map[string]contentserver.Post) []string {
 	return categories
 }
 
-func GetBody(path string) template.HTML {
-	data, err := os.ReadFile(path)
-
+func GetBody(path string) (template.HTML, error) {
+	data, err := readFile(path)
 	if err != nil {
-		fmt.Println(err)
+		return "", fmt.Errorf("failed to read body file %s: %w", path, err)
 	}
-
 	return getHTML(data)
-
 }
 
-func GetMeta(path string) *contentserver.PostMeta {
-	var meta contentserver.PostMeta
-
-	data, err := os.ReadFile(path)
-
+func GetMeta(path string) (*contentserver.PostMeta, error) {
+	data, err := readFile(path)
 	if err != nil {
-		fmt.Println(err)
+		return nil, fmt.Errorf("failed to read metadata file %s: %w", path, err)
 	}
 
+	var meta contentserver.PostMeta
 	if err := yaml.Unmarshal(data, &meta); err != nil {
-		fmt.Println(err)
+		return nil, fmt.Errorf("failed to unmarshal YAML from %s: %w", path, err)
 	}
 
-	return &meta
+	return &meta, nil
 }

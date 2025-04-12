@@ -2,7 +2,7 @@ package main
 
 import (
 	create "contentserver/internal/create"
-	contentserver "contentserver/internal/posts"
+	contentserver "contentserver/internal/handlers"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
