@@ -32,6 +32,7 @@ func main() {
 	r.GET("/", HomeHandler)
 	r.HEAD("/", HomeHandler)
 	r.GET("/about", aboutHandler)
+	r.GET("/posts", PostsHandler)
 
 	r.Run("0.0.0.0:8080")
 }
@@ -57,9 +58,7 @@ func CategoriesHandler(c *gin.Context) {
 }
 
 func PostsHandler(c *gin.Context) {
-	postsToSend := posts
-
-	c.JSON(http.StatusOK, postsToSend)
+	c.HTML(http.StatusOK, "posts", posts)
 }
 
 func GetHandler(c *gin.Context) {

@@ -41,12 +41,14 @@ func getHTML(markdown []byte) template.HTML {
 func GetPosts(postsDir string) map[string]contentserver.Post {
 	posts := make(map[string]contentserver.Post)
 	files, err := os.ReadDir(postsDir)
-
+	fmt.Println("Reading posts from: ", postsDir)
+	
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	for _, f := range files {
+		fmt.Println("Reading post: ", f.Name())
 		if f.IsDir() {
 			postSlug := f.Name()
 			posts[postSlug] = GetPost(postsDir, postSlug)
