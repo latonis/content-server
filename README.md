@@ -13,6 +13,17 @@ air
 
 ## Go
 
+### Update dependencies
+```bash
+go get -u ./...
+```
+
+### Update go.mod
+```bash
+go mod tidy
+```
+
+### Run server for development
 ```bash
 go run cmd/web/server.go
 ```
