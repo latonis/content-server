@@ -1,0 +1,30 @@
+{{ define "top" }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./static/output.css" rel="stylesheet">
+</head>
+
+<body class="p-4">
+    <header>
+        <h1 class="text-3xl pb-4">Jacob's Work</h1>
+        <nav class="flex gap-4 pb-4">
+            <a class="font-medium text-raffia-600" href="/">Home</a>
+            <a class="font-medium text-raffia-600" href="/about">About</a>
+        </nav>
+    </header>
+
+    <main class="flex flex-col gap-4 pb-4">
+        {{ end}}
+        {{ define "bottom" }}
+    </main>
+    <footer>
+        {{ template "footer" . }}
+    </footer>
+</body>
+
+</html>
+{{ end }}

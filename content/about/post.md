@@ -7,4 +7,4 @@ I've experience in software engineering, security operations, threat intellgienc
 - [Ruff](https://github.com/astral-sh/ruff)
 - and more!
 
-I write in a whole lot of different languages, depending on what the task or job requires. I've written full stack tools in Sveltekit + Go, CLI tools in Rust, Python, and a few more :P.
+I write in a whole lot of different languages, depending on what the task or job requires. I've written full stack tools in Sveltekit + Go, CLI tools in Rust, Python, and data analysis tools in a few more :P.

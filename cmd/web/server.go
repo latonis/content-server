@@ -1,15 +1,16 @@
 package main
 
 import (
-	contentserver "contentserver/internal/create"
+	create "contentserver/internal/create"
+	contentserver "contentserver/internal/posts"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 var posts map[string]contentserver.Post
+var about contentserver.Post
 var categories []string
-var postsByCategory map[string][]contentserver.Post
 var YARAPosts2024 []contentserver.Post
 
 type Link struct {
@@ -24,23 +25,23 @@ func main() {
 	r := gin.Default()
 	r.Static("/static", "./static")
 	r.StaticFile("/favicon.png", "./static/favicon.png")
-	posts = contentserver.GetPosts()
-	categories = contentserver.GetCategories(&posts)
-	postsByCategory = contentserver.PostsByCategory(&posts)
-	YARAPosts2024 = contentserver.GetYARAPosts(postsByCategory["100-days-of-yara-2024"])
-
+	posts = create.GetPosts("content/posts")
+	about = create.GetPost("content", "about")
 	r.LoadHTMLGlob("templates/*")
-	r.GET("/ping", GetHandler)
-	r.GET("/api/v1/posts", PostsHandler)
-	r.GET("/api/v1/posts/categories", CategoriesHandler)
+
 	r.GET("/", HomeHandler)
 	r.HEAD("/", HomeHandler)
-	r.GET("/posts/:slug", PostHandler)
+	r.GET("/about", aboutHandler)
+
 	r.Run("0.0.0.0:8080")
 }
 
 func HomeHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "base", nil)
+	c.HTML(http.StatusOK, "home", nil)
+}
+
+func aboutHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "about", about)
 }
 
 func CategoriesHandler(c *gin.Context) {
@@ -57,36 +58,8 @@ func CategoriesHandler(c *gin.Context) {
 
 func PostsHandler(c *gin.Context) {
 	postsToSend := posts
-	// remove about page from posts
-	keys := make([]contentserver.Post, len(postsToSend)-1)
-	i := 0
 
-	if c.Query("category") != "" {
-		if c.Query("category") == "100-days-of-yara-2024" {
-			keys = YARAPosts2024
-		} else {
-			keys = postsByCategory[c.Query("category")]
-		}
-	} else {
-		for k := range postsToSend {
-			if k == "about" {
-				continue
-			}
-			keys[i] = posts[k]
-			i++
-		}
-	}
-
-	if c.Request.Header.Get("Hx-Request") == "true" {
-		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("<ul>"))
-		for k := range keys {
-			c.HTML(http.StatusOK, "list", Link{"/posts/" + keys[k].Slug, keys[k].Meta.Title, false, ""})
-		}
-		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("</ul>"))
-		return
-	}
-
-	c.JSON(http.StatusOK, keys)
+	c.JSON(http.StatusOK, postsToSend)
 }
 
 func GetHandler(c *gin.Context) {

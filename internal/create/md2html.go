@@ -6,8 +6,8 @@ import (
 	"os"
 	"slices"
 	"sort"
-	"strings"
-	"time"
+
+	contentserver "contentserver/internal/posts"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/ast"
@@ -15,19 +15,6 @@ import (
 	"github.com/gomarkdown/markdown/parser"
 	"gopkg.in/yaml.v3"
 )
-
-type PostMeta struct {
-	Title       string   `yaml:"title"`
-	Date        MetaDate `yaml:"date"`
-	Categories  []string `yaml:"categories"`
-	Description string   `yaml:"description"`
-}
-
-type Post struct {
-	Slug string
-	Meta PostMeta
-	Body template.HTML
-}
 
 func mdToHTML(md []byte, printAst bool) []byte {
 	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
@@ -51,9 +38,9 @@ func getHTML(markdown []byte) template.HTML {
 	return template.HTML(mdToHTML(markdown, false))
 }
 
-func GetPosts() map[string]Post {
-	posts := make(map[string]Post)
-	files, err := os.ReadDir("posts")
+func GetPosts(postsDir string) map[string]contentserver.Post {
+	posts := make(map[string]contentserver.Post)
+	files, err := os.ReadDir(postsDir)
 
 	if err != nil {
 		fmt.Println(err)
@@ -62,21 +49,26 @@ func GetPosts() map[string]Post {
 	for _, f := range files {
 		if f.IsDir() {
 			postSlug := f.Name()
-			post := new(Post)
-			post.Slug = postSlug
-			meta := GetMeta("posts/" + postSlug + "/meta.yaml")
-			body := GetBody("posts/" + postSlug + "/post.md")
-			post.Meta = *meta
-			post.Body = body
-			posts[postSlug] = *post
+			posts[postSlug] = GetPost(postsDir, postSlug)
 		}
 	}
 
 	return posts
 }
 
-func PostsByCategory(posts *map[string]Post) map[string][]Post {
-	postsByCategory := make(map[string][]Post)
+func GetPost(postsDir string, slug string) contentserver.Post {
+	post := new(contentserver.Post)
+	post.Slug = slug
+	meta := GetMeta(postsDir + "/" + slug + "/meta.yaml")
+	body := GetBody(postsDir + "/" + slug + "/post.md")
+	post.Meta = *meta
+	post.Body = body
+
+	return *post
+}
+
+func PostsByCategory(posts *map[string]contentserver.Post) map[string][]contentserver.Post {
+	postsByCategory := make(map[string][]contentserver.Post)
 
 	for _, post := range *posts {
 		for _, category := range post.Meta.Categories {
@@ -93,7 +85,7 @@ func PostsByCategory(posts *map[string]Post) map[string][]Post {
 	return postsByCategory
 }
 
-func GetYARAPosts(posts []Post) []Post {
+func GetYARAPosts(posts []contentserver.Post) []contentserver.Post {
 
 	sort.SliceStable(posts, func(i, j int) bool {
 		return posts[i].Meta.Date.Time.Compare(posts[j].Meta.Date.Time) == -1
@@ -102,7 +94,7 @@ func GetYARAPosts(posts []Post) []Post {
 	return posts
 }
 
-func GetCategories(posts *map[string]Post) []string {
+func GetCategories(posts *map[string]contentserver.Post) []string {
 	categories := make([]string, 0)
 
 	for _, post := range *posts {
@@ -127,28 +119,8 @@ func GetBody(path string) template.HTML {
 
 }
 
-type MetaDate struct {
-	Time time.Time `yaml:"date"`
-}
-
-func (t *MetaDate) UnmarshalYAML(unmarshal func(interface{}) error) error {
-
-	var buf string
-	err := unmarshal(&buf)
-	if err != nil {
-		return nil
-	}
-
-	tt, err := time.Parse("2006-01-02", strings.TrimSpace(buf))
-	if err != nil {
-		return err
-	}
-	t.Time = tt
-	return nil
-}
-
-func GetMeta(path string) *PostMeta {
-	var meta PostMeta
+func GetMeta(path string) *contentserver.PostMeta {
+	var meta contentserver.PostMeta
 
 	data, err := os.ReadFile(path)
 
@@ -161,12 +133,4 @@ func GetMeta(path string) *PostMeta {
 	}
 
 	return &meta
-}
-
-func main() {
-	posts := GetPosts()
-
-	for _, post := range posts {
-		fmt.Println(post)
-	}
 }
