@@ -25,8 +25,19 @@ func main() {
 	r := gin.Default()
 	r.Static("/static", "./static")
 	r.StaticFile("/favicon.png", "./static/favicon.png")
-	posts = create.GetPosts("content/posts")
-	about = create.GetPost("content", "about")
+	var err error
+
+	posts, err = create.GetPosts("content/posts")
+
+	if err != nil {
+		panic(err)
+	}
+
+	about, err = create.GetPost("content", "about")
+
+	if err != nil {
+		panic(err)
+	}
 	r.LoadHTMLGlob("templates/*")
 
 	r.GET("/", HomeHandler)
