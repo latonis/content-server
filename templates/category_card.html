@@ -1,0 +1,11 @@
+{{ define "category_card"}}
+
+<div hx-get="/api/v1/categories/{{ . }}" hx-trigger="click" hx-target="#posts" class="directory-item flex items-center gap-2">
+    <svg class="w-5 h-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 7h18M3 7l3-3h12l3 3M3 7v11a2 2 0 002 2h14a2 2 0 002-2V7" />
+    </svg>
+    <span class="text-blue-500 hover:underline cursor-pointer hover:text-blue-700 transition">{{.}}</span>
+</div>
+{{ end}}
