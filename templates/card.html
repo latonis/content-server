@@ -1,10 +1,20 @@
 {{ define "card" }}
-<div class="border rounded-lg p-4 shadow-md">
-    <h2 class="text-raffia-600 text-2xl font-bold pb-2">
-        <a href="/posts/{{.Slug}}">{{.Meta.Title}}</a>
-    </h2>
-    <p class="text-lg pb-2">
-        {{.Meta.Description}}
-    </p>
+<div class="border rounded-lg p-4 shadow-md relative">
+    <div class="absolute top-0 left-0 h-full flex items-center pl-4">
+        <div class="border border-blue-500 rounded-full p-2 flex items-center justify-center bg-white">
+            <svg class="w-6 h-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 18l6-6-6-6M8 6l-6 6 6 6" />
+            </svg>
+        </div>
+    </div>
+    <div class="pl-16">
+        <h2 class="text-lg font-semibold">
+            <a href="/posts/{{.Slug}}" class="hover:underline">{{.Meta.Title}}</a>
+        </h2>
+        <p class="text-lg pb-2">
+            {{.Meta.Description}}
+        </p>
+    </div>
 </div>
 {{ end}}

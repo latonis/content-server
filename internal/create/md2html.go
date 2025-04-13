@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"html/template"
 	"os"
-	"slices"
 	"sort"
 
 	contentserver "contentserver/internal/handlers"
@@ -89,44 +88,11 @@ func GetPost(postsDir, slug string) (contentserver.Post, error) {
 	}, nil
 }
 
-// Groups posts by their categories
-func PostsByCategory(posts map[string]contentserver.Post) map[string][]contentserver.Post {
-	postsByCategory := make(map[string][]contentserver.Post)
-
-	for _, post := range posts {
-		for _, category := range post.Meta.Categories {
-			postsByCategory[category] = append(postsByCategory[category], post)
-		}
-	}
-
-	for category := range postsByCategory {
-		sort.SliceStable(postsByCategory[category], func(i, j int) bool {
-			return postsByCategory[category][i].Meta.Date.Time.Before(postsByCategory[category][j].Meta.Date.Time)
-		})
-	}
-
-	return postsByCategory
-}
-
 func GetYARAPosts(posts []contentserver.Post) []contentserver.Post {
 	sort.SliceStable(posts, func(i, j int) bool {
 		return posts[i].Meta.Date.Time.After(posts[j].Meta.Date.Time)
 	})
 	return posts
-}
-
-func GetCategories(posts map[string]contentserver.Post) []string {
-	categories := make([]string, 0)
-
-	for _, post := range posts {
-		for _, category := range post.Meta.Categories {
-			if !slices.Contains(categories, category) {
-				categories = append(categories, category)
-			}
-		}
-	}
-
-	return categories
 }
 
 func GetBody(path string) (template.HTML, error) {

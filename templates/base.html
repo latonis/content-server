@@ -5,17 +5,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="./static/output.css" rel="stylesheet">
+    <link href="/static/output.css" rel="stylesheet">
 </head>
 
 <body class="p-4">
     <header>
-        <h1 class="text-3xl pb-4">Jacob's Work</h1>
-        <nav
-            class="flex gap-4 pb-4 [&>a]:text-raffia-600 [&>a]:font-medium [&>a]:hover:text-raffia-800 [&>a]:transition-colors [&>a]:duration-300">
-            <a href="/">Home</a>
-            <a href="/about">About</a>
-            <a href="/posts">Posts</a>
+        <h1>Jacob's Work</h1>
+        <nav class="flex gap-4 pb-4 [&>a]:hover:text-raffia-800 [&>a]:transition-colors [&>a]:duration-300">
+            <a href="/" {{ if eq .CurrentPath "/" }} class="text-black-500 font-bold" {{ else }} class="text-raffia-500"
+                {{ end }}>Home</a>
+            <a href="/about" {{ if eq .CurrentPath "/about" }}class="text-black-500 font-bold" {{else }}
+                class="text-raffia-500" {{ end }}>About</a>
+            <a href="/posts" {{ if eq .CurrentPath "/posts" }}class="text-black-500 font-bold" {{ else }}
+                class="text-raffia-500" {{ end }}>Posts</a>
         </nav>
     </header>
 

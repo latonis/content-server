@@ -9,9 +9,15 @@ import (
 )
 
 var posts map[string]contentserver.Post
+var postsByDate []contentserver.Post
 var about contentserver.Post
 var categories []string
 var YARAPosts2024 []contentserver.Post
+
+type Container struct {
+	CurrentPath string
+	Data        any
+}
 
 type Link struct {
 	Ref    string
@@ -28,6 +34,9 @@ func main() {
 	var err error
 
 	posts, err = create.GetPosts("content/posts")
+	postsByDate = contentserver.GetPostsByDate(posts)
+	categories = contentserver.GetCategories(posts)
+	_ = contentserver.GetPostsByCategory(posts)
 
 	if err != nil {
 		panic(err)
@@ -45,6 +54,7 @@ func main() {
 	r.HEAD("/", HomeHandler)
 	r.GET("/about", aboutHandler)
 	r.GET("/posts", PostsHandler)
+	r.GET("/posts/:slug", PostHandler)
 
 	r.Run("0.0.0.0:8080")
 }
@@ -63,11 +73,21 @@ func HomeHandler(c *gin.Context) {
 		i++
 	}
 
-	c.HTML(http.StatusOK, "home", topPosts)
+	container := Container{
+		CurrentPath: "/",
+		Data:        map[string]any{"posts": topPosts},
+	}
+
+	c.HTML(http.StatusOK, "home", container)
 }
 
 func aboutHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "about", about)
+	container := Container{
+		CurrentPath: "/about",
+		Data:        about,
+	}
+
+	c.HTML(http.StatusOK, "about", container)
 }
 
 func CategoriesHandler(c *gin.Context) {
@@ -79,11 +99,22 @@ func CategoriesHandler(c *gin.Context) {
 		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("</ul>"))
 		return
 	}
-	c.JSON(http.StatusOK, categories)
+
+	container := Container{
+		CurrentPath: "/categories",
+		Data:        categories,
+	}
+
+	c.JSON(http.StatusOK, container)
 }
 
 func PostsHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "posts", posts)
+	container := Container{
+		CurrentPath: "/posts",
+		Data:        map[string]any{"posts": postsByDate, "categories": categories},
+	}
+
+	c.HTML(http.StatusOK, "posts", container)
 }
 
 func GetHandler(c *gin.Context) {
@@ -98,5 +129,10 @@ func PostHandler(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "base", val)
+	container := Container{
+		CurrentPath: "/posts/" + c.Param("slug"),
+		Data:        val,
+	}
+
+	c.HTML(http.StatusOK, "post", container)
 }

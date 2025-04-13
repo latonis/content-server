@@ -1,0 +1,9 @@
+{{ define "post" }}
+{{ template "top" . }}
+
+{{ .Data.Meta.Title }}
+
+{{ .Data.Body }}
+
+{{ template "bottom" .}}
+{{ end }}
