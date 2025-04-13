@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+    --color-raffia-50: #fbf8f1;
+    --color-raffia-100: #f5efdf;
+    --color-raffia-200: #e4d0a9;
+    --color-raffia-300: #ddc294;
+    --color-raffia-400: #cfa368;
+    --color-raffia-500: #c48c4b;
+    --color-raffia-600: #b67740;
+    --color-raffia-700: #985f36;
+    --color-raffia-800: #7a4d32;
+    --color-raffia-900: #63402b;
+    --color-raffia-950: #352015;
+    --color-gopher-500: #00ADD8;
+}
+
+@layer base {
+    ul {
+        @apply list-disc;
+        @apply pl-4;
+    }
+
+    h1 {
+        @apply text-raffia-600;
+        @apply text-3xl;
+        @apply pb-4;
+        @apply font-bold;
+    }
+
+    h2 {
+        @apply text-raffia-600;
+        @apply text-2xl;
+        @apply pb-4;
+        @apply font-bold;
+    }
+
+    h3 {
+        @apply text-raffia-600;
+        @apply text-xl;
+        @apply pb-4;
+        @apply font-bold;
+    }
+}

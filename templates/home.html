@@ -1,0 +1,13 @@
+{{define "home"}}
+{{ template "top" . }}
+<article>
+    <h2>Random Posts</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pb-4">
+        {{range index .Data "posts"}}
+        {{ template "card" . }}
+        {{ end }}
+    </div>
+
+</article>
+{{ template "bottom" .}}
+{{ end }}

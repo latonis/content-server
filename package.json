@@ -1,0 +1,24 @@
+{
+  "name": "content-server",
+  "version": "1.0.0",
+  "description": "I wanted to build something with go templates and htmx, so here we are. This is a webserver that loads pages via markdown and converts them to html (read: htmx, barely) and then delivers the content to the user.",
+  "homepage": "https://github.com/latonis/content-server#readme",
+  "bugs": {
+    "url": "https://github.com/latonis/content-server/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/latonis/content-server.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "build": "tailwindcss build -o static/css/tailwind.css",
+    "watch": "tailwindcss build -o static/css/tailwind.css --watch"
+  },
+  "dependencies": {
+    "tailwindcss": "^4.1.3"
+  }
+}

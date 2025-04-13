@@ -1,9 +1,0 @@
-{{ define "list" }}
-<li>
-    {{ if .Htmx }}
-    <a hx-get="{{ .Ref }}" hx-target="{{ .Target }}" hx-swap="innerHTML" href="{{ .Ref }}">{{ .Val }}</a>
-    {{ else }}
-    <a href="{{ .Ref }}">{{ .Val }}</a>
-    {{ end }} 
-</li>
-{{ end }}

@@ -1,16 +1,23 @@
 package main
 
 import (
-	contentserver "contentserver/internal/create"
+	create "contentserver/internal/create"
+	contentserver "contentserver/internal/handlers"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 var posts map[string]contentserver.Post
+var postsByDate []contentserver.Post
+var about contentserver.Post
 var categories []string
-var postsByCategory map[string][]contentserver.Post
 var YARAPosts2024 []contentserver.Post
+
+type Container struct {
+	CurrentPath string
+	Data        any
+}
 
 type Link struct {
 	Ref    string
@@ -24,23 +31,63 @@ func main() {
 	r := gin.Default()
 	r.Static("/static", "./static")
 	r.StaticFile("/favicon.png", "./static/favicon.png")
-	posts = contentserver.GetPosts()
-	categories = contentserver.GetCategories(&posts)
-	postsByCategory = contentserver.PostsByCategory(&posts)
-	YARAPosts2024 = contentserver.GetYARAPosts(postsByCategory["100-days-of-yara-2024"])
+	var err error
+
+	posts, err = create.GetPosts("content/posts")
+	postsByDate = contentserver.GetPostsByDate(posts)
+	categories = contentserver.GetCategories(posts)
+	_ = contentserver.GetPostsByCategory(posts)
+
+	if err != nil {
+		panic(err)
+	}
+
+	about, err = create.GetPost("content", "about")
+
+	if err != nil {
+		panic(err)
+	}
 
 	r.LoadHTMLGlob("templates/*")
-	r.GET("/ping", GetHandler)
-	r.GET("/api/v1/posts", PostsHandler)
-	r.GET("/api/v1/posts/categories", CategoriesHandler)
+
 	r.GET("/", HomeHandler)
 	r.HEAD("/", HomeHandler)
+	r.GET("/about", aboutHandler)
+	r.GET("/posts", PostsHandler)
 	r.GET("/posts/:slug", PostHandler)
+
 	r.Run("0.0.0.0:8080")
 }
 
 func HomeHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "base", nil)
+
+	topPosts := make([]contentserver.Post, 0)
+	maxPosts := min(3, len(posts))
+	i := 0
+	for _, val := range posts {
+		if i >= maxPosts {
+			break
+		}
+
+		topPosts = append(topPosts, val)
+		i++
+	}
+
+	container := Container{
+		CurrentPath: "/",
+		Data:        map[string]any{"posts": topPosts},
+	}
+
+	c.HTML(http.StatusOK, "home", container)
+}
+
+func aboutHandler(c *gin.Context) {
+	container := Container{
+		CurrentPath: "/about",
+		Data:        about,
+	}
+
+	c.HTML(http.StatusOK, "about", container)
 }
 
 func CategoriesHandler(c *gin.Context) {
@@ -52,41 +99,22 @@ func CategoriesHandler(c *gin.Context) {
 		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("</ul>"))
 		return
 	}
-	c.JSON(http.StatusOK, categories)
+
+	container := Container{
+		CurrentPath: "/categories",
+		Data:        categories,
+	}
+
+	c.JSON(http.StatusOK, container)
 }
 
 func PostsHandler(c *gin.Context) {
-	postsToSend := posts
-	// remove about page from posts
-	keys := make([]contentserver.Post, len(postsToSend)-1)
-	i := 0
-
-	if c.Query("category") != "" {
-		if c.Query("category") == "100-days-of-yara-2024" {
-			keys = YARAPosts2024
-		} else {
-			keys = postsByCategory[c.Query("category")]
-		}
-	} else {
-		for k := range postsToSend {
-			if k == "about" {
-				continue
-			}
-			keys[i] = posts[k]
-			i++
-		}
+	container := Container{
+		CurrentPath: "/posts",
+		Data:        map[string]any{"posts": postsByDate, "categories": categories},
 	}
 
-	if c.Request.Header.Get("Hx-Request") == "true" {
-		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("<ul>"))
-		for k := range keys {
-			c.HTML(http.StatusOK, "list", Link{"/posts/" + keys[k].Slug, keys[k].Meta.Title, false, ""})
-		}
-		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("</ul>"))
-		return
-	}
-
-	c.JSON(http.StatusOK, keys)
+	c.HTML(http.StatusOK, "posts", container)
 }
 
 func GetHandler(c *gin.Context) {
@@ -101,5 +129,10 @@ func PostHandler(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "base", val)
+	container := Container{
+		CurrentPath: "/posts/" + c.Param("slug"),
+		Data:        val,
+	}
+
+	c.HTML(http.StatusOK, "post", container)
 }
