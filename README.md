@@ -31,5 +31,5 @@ go run cmd/web/server.go
 ## Tailwind
 
 ```bash
-npx @tailwindcss/cli -i ./static/main.css -o ./static/output.css --watc
+npx @tailwindcss/cli -i ./static/main.css -o ./static/output.css --watch
 ```
