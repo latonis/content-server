@@ -1,7 +1,7 @@
 package main
 
 import (
-	create "contentserver/internal/create"
+	create "contentserver/internal/format"
 	web "contentserver/internal/handlers"
 	"net/http"
 
@@ -17,6 +17,7 @@ var YARAPosts2024 []web.Post
 
 type Container struct {
 	CurrentPath string
+	Title       string
 	Data        any
 }
 
@@ -79,6 +80,7 @@ func HomeHandler(c *gin.Context) {
 
 	container := Container{
 		CurrentPath: "/",
+		Title:       "Home",
 		Data:        map[string]any{"posts": topPosts},
 	}
 
@@ -88,6 +90,7 @@ func HomeHandler(c *gin.Context) {
 func aboutHandler(c *gin.Context) {
 	container := Container{
 		CurrentPath: "/about",
+		Title:       "About",
 		Data:        about,
 	}
 
@@ -97,7 +100,7 @@ func aboutHandler(c *gin.Context) {
 func APICategoriesHandler(c *gin.Context) {
 	category := c.Param("category")
 	posts_to_send, ok := postsByCategory[category]
-	
+
 	if !ok {
 		c.HTML(http.StatusNotFound, "category not found", nil)
 		return
@@ -118,6 +121,7 @@ func PostsHandler(c *gin.Context) {
 
 	container := Container{
 		CurrentPath: "/posts",
+		Title:       "Posts",
 		Data:        map[string]any{"posts": posts, "categories": categories},
 	}
 
@@ -138,6 +142,7 @@ func PostHandler(c *gin.Context) {
 
 	container := Container{
 		CurrentPath: "/posts/" + c.Param("slug"),
+		Title:       val.Meta.Title,
 		Data:        val,
 	}
 
