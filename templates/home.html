@@ -3,6 +3,12 @@
 <article
     class="[&>h1]:text-raffia-600  [&>h1]:text-3xl [&>h1]:font-bold [&>h1]:pb-4 [&>h2]:text-raffia-600 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:pb-4 [&>h3]:text-raffia-600 [&>h3]:text-xl [&>h3]:font-bold [&>h3]:pb-4">
     <h1>This is my homepage</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {{range .}}
+            {{ template "card" . }}
+        {{ end }}
+    </div>
 </article>
 {{ template "bottom" .}}
 {{ end }}

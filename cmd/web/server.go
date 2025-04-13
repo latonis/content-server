@@ -38,6 +38,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	r.LoadHTMLGlob("templates/*")
 
 	r.GET("/", HomeHandler)
@@ -49,7 +50,20 @@ func main() {
 }
 
 func HomeHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "home", nil)
+
+	topPosts := make([]contentserver.Post, 0)
+	maxPosts := min(3, len(posts))
+	i := 0
+	for _, val := range posts {
+		if i >= maxPosts {
+			break
+		}
+
+		topPosts = append(topPosts, val)
+		i++
+	}
+
+	c.HTML(http.StatusOK, "home", topPosts)
 }
 
 func aboutHandler(c *gin.Context) {

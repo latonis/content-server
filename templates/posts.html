@@ -5,14 +5,7 @@
     <h1>These are my posts</h1>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {{range $index, $element := .}}
-        <div class="border rounded-lg p-4 shadow-md">
-            <h2 class="text-raffia-600 text-2xl font-bold pb-2">
-                <a href="/posts/{{$element.Slug}}">{{$element.Meta.Title}}</a>
-            </h2>
-            <p class="text-lg pb-2">
-                {{$element.Meta.Description}}
-            </p>
-        </div>
+            {{ template "card" $element }}
         {{ end }}
     </div>
 </article>
