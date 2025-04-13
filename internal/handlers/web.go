@@ -79,7 +79,8 @@ func GetPostsByCategory(posts map[string]Post) map[string][]Post {
 
 	for _, post := range posts {
 		for _, category := range post.Meta.Categories {
-			postsByCategory[category] = append(postsByCategory[category], post)
+			lower_category := strings.ToLower(category)
+			postsByCategory[lower_category] = append(postsByCategory[lower_category], post)
 		}
 	}
 

@@ -2,17 +2,18 @@ package main
 
 import (
 	create "contentserver/internal/create"
-	contentserver "contentserver/internal/handlers"
+	web "contentserver/internal/handlers"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-var posts map[string]contentserver.Post
-var postsByDate []contentserver.Post
-var about contentserver.Post
+var posts map[string]web.Post
+var postsByDate []web.Post
+var postsByCategory map[string][]web.Post
+var about web.Post
 var categories []string
-var YARAPosts2024 []contentserver.Post
+var YARAPosts2024 []web.Post
 
 type Container struct {
 	CurrentPath string
@@ -34,9 +35,10 @@ func main() {
 	var err error
 
 	posts, err = create.GetPosts("content/posts")
-	postsByDate = contentserver.GetPostsByDate(posts)
-	categories = contentserver.GetCategories(posts)
-	_ = contentserver.GetPostsByCategory(posts)
+	postsByDate = web.GetPostsByDate(posts)
+	postsByCategory = web.GetPostsByCategory(posts)
+	categories = web.GetCategories(posts)
+	_ = web.GetPostsByCategory(posts)
 
 	if err != nil {
 		panic(err)
@@ -55,13 +57,15 @@ func main() {
 	r.GET("/about", aboutHandler)
 	r.GET("/posts", PostsHandler)
 	r.GET("/posts/:slug", PostHandler)
+	r.GET("/posts/categories/:category", PostsHandler)
+	r.GET("/api/v1/categories/:category", APICategoriesHandler)
 
 	r.Run("0.0.0.0:8080")
 }
 
 func HomeHandler(c *gin.Context) {
 
-	topPosts := make([]contentserver.Post, 0)
+	topPosts := make([]web.Post, 0)
 	maxPosts := min(3, len(posts))
 	i := 0
 	for _, val := range posts {
@@ -90,28 +94,31 @@ func aboutHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "about", container)
 }
 
-func CategoriesHandler(c *gin.Context) {
-	if c.Request.Header.Get("Hx-Request") == "true" {
-		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("<ul>"))
-		for k := range categories {
-			c.HTML(http.StatusOK, "list", Link{"/api/v1/posts?category=" + categories[k], categories[k], true, "#posts"})
-		}
-		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("</ul>"))
+func APICategoriesHandler(c *gin.Context) {
+	category := c.Param("category")
+	posts_to_send, ok := postsByCategory[category]
+	
+	if !ok {
+		c.HTML(http.StatusNotFound, "category not found", nil)
 		return
 	}
 
-	container := Container{
-		CurrentPath: "/categories",
-		Data:        categories,
+	for i := range posts_to_send {
+		c.HTML(http.StatusOK, "card", posts_to_send[i])
 	}
-
-	c.JSON(http.StatusOK, container)
 }
 
 func PostsHandler(c *gin.Context) {
+	category := c.Param("category")
+	posts := postsByDate
+
+	if category != "" {
+		posts = postsByCategory[category]
+	}
+
 	container := Container{
 		CurrentPath: "/posts",
-		Data:        map[string]any{"posts": postsByDate, "categories": categories},
+		Data:        map[string]any{"posts": posts, "categories": categories},
 	}
 
 	c.HTML(http.StatusOK, "posts", container)
