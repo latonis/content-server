@@ -64,8 +64,9 @@ func GetCategories(posts map[string]Post) []string {
 
 	for _, post := range posts {
 		for _, category := range post.Meta.Categories {
-			if !slices.Contains(categories, category) {
-				categories = append(categories, category)
+			lower_category := strings.ToLower(category)
+			if !slices.Contains(categories, lower_category) {
+				categories = append(categories, lower_category)
 			}
 		}
 	}
