@@ -58,15 +58,17 @@ func GetPosts(postsDir string) (map[string]contentserver.Post, error) {
 
 	for _, f := range files {
 		if f.IsDir() {
-			postSlug := f.Name()
-			post, err := GetPost(postsDir, postSlug)
-			if err != nil {
-				return nil, fmt.Errorf("failed to get post %s: %w", postSlug, err)
+			_, err := os.Stat(fmt.Sprintf("%s/%s/meta.yaml", postsDir, f.Name()))
+			if !os.IsNotExist(err) {
+				postSlug := f.Name()
+				post, err := GetPost(postsDir, postSlug)
+				if err != nil {
+					return nil, fmt.Errorf("failed to get post %s: %w", postSlug, err)
+				}
+				posts[postSlug] = post
 			}
-			posts[postSlug] = post
 		}
 	}
-
 	return posts, nil
 }
 
