@@ -13,7 +13,7 @@ var postsByDate []web.Post
 var postsByCategory map[string][]web.Post
 var about web.Post
 var categories []string
-var YARAPosts2024 []web.Post
+var YARAPosts2024 map[string]web.Post
 
 type Container struct {
 	CurrentPath string
@@ -37,9 +37,9 @@ func main() {
 
 	posts, err = create.GetPosts("content/posts")
 	postsByDate = web.GetPostsByDate(posts)
+	YARAPosts2024, err = create.GetPosts("content/posts/yara-2024")
 	postsByCategory = web.GetPostsByCategory(posts)
 	categories = web.GetCategories(posts)
-	_ = web.GetPostsByCategory(posts)
 
 	if err != nil {
 		panic(err)

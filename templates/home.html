@@ -1,13 +1,26 @@
 {{define "home"}}
 {{ template "top" . }}
 <article>
+    <div class="bg-white text-gray-900 font-mono p-6 rounded-lg md:shadow-none shadow-md md:border-0 border border-blue-500">
+        <h2 class="text-xl font-bold text-blue-500 mb-4">// Things that interest me</h2>
+        <div class="pl-4">
+            <p class="mb-2 hover:text-blue-700 transition duration-300">
+                <span class="text-blue-500">1.</span> security research
+            </p>
+            <p class="mb-2 hover:text-blue-700 transition duration-300">
+                <span class="text-blue-500">2.</span> programming language theory
+            </p>
+            <p class="mb-2 hover:text-blue-700 transition duration-300">
+                <span class="text-blue-500">3.</span> developer tooling
+            </p>
+        </div>
+    </div>
     <h2>Random Posts</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pb-4">
+    <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-6 pb-4">
         {{range index .Data "posts"}}
         {{ template "card" . }}
         {{ end }}
     </div>
-
 </article>
 {{ template "bottom" .}}
 {{ end }}
