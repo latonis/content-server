@@ -3,6 +3,7 @@ package main
 import (
 	create "contentserver/internal/format"
 	web "contentserver/internal/handlers"
+	"maps"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -43,6 +44,7 @@ func main() {
 
 	// special handling so 100-days-of-yara doesn't pollute the posts page
 	postsByCategory["100 days of yara 2024"] = make([]web.Post, 0)
+	maps.Copy(posts, YARAPosts2024)
 	for _, v := range web.GetPostsByDate(YARAPosts2024) {
 		postsByCategory["100 days of yara 2024"] = append(postsByCategory["100 days of yara 2024"], v)
 	}
