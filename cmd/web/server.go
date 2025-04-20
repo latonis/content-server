@@ -41,6 +41,13 @@ func main() {
 	postsByCategory = web.GetPostsByCategory(posts)
 	categories = web.GetCategories(posts)
 
+	// special handling so 100-days-of-yara doesn't pollute the posts page
+	postsByCategory["100 days of yara 2024"] = make([]web.Post, 0)
+	for _, v := range web.GetPostsByDate(YARAPosts2024) {
+		postsByCategory["100 days of yara 2024"] = append(postsByCategory["100 days of yara 2024"], v)
+	}
+	categories = append(categories, "100 days of yara 2024")
+
 	if err != nil {
 		panic(err)
 	}
