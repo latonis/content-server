@@ -32,6 +32,11 @@ jobs:
         DROPLET_ID: ${{ secrets.DROPLET_ID }}
         SSH_KEY: ${{ secrets.SSH_KEY }}
       run: |
+        DropletIP=$(doctl compute droplet get $DROPLET_ID --format PublicIPv4 --no-header)
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+        ssh-keyscan -H $DropletIP >> ~/.ssh/known_hosts 2>/dev/null
+
         echo "$SSH_KEY" > $GITHUB_WORKSPACE/deploy_key
         chmod 600 $GITHUB_WORKSPACE/deploy_key
         export SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null"
