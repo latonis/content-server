@@ -30,5 +30,6 @@ jobs:
     - name: Trigger deployment on droplet
       env:
         DROPLET_ID: ${{ secrets.DROPLET_ID }}
+        SSH_KEY: ${{ secrets.SSH_KEY }}
       run: |
-        doctl compute ssh $DROPLET_ID -- "sudo -u deployer /home/deployer/deploy.sh"
+        doctl compute ssh $DROPLET_ID --ssh-user deployer --ssh-key-path <(echo "$SSH_KEY") -- "/home/deployer/deploy.sh"
