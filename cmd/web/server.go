@@ -111,7 +111,7 @@ func APICategoriesHandler(c *gin.Context) {
 	posts_to_send, ok := postsByCategory[category]
 
 	if !ok {
-		c.HTML(http.StatusNotFound, "category not found", nil)
+		c.Status(http.StatusNotFound)
 		return
 	}
 
@@ -145,7 +145,7 @@ func PostHandler(c *gin.Context) {
 	val, ok := posts[c.Param("slug")]
 
 	if !ok {
-		c.JSON(http.StatusNotFound, "post not found")
+		c.Status(http.StatusNotFound)
 		return
 	}
 
