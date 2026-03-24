@@ -2,6 +2,6 @@ version: '3'
 
 services:
   blog:
-    image: "registry.digitalocean.com/registry-101/content-server:latest"
+    image: "registry.digitalocean.com/${REGISTRY_NAME}/content-server:${COMMIT_HASH:-latest}"
     ports:
       - "8080:8080"

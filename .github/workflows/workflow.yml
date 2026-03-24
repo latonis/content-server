@@ -26,3 +26,9 @@ jobs:
 
     - name: Push image to DigitalOcean Container Registry
       run: docker push ${{ secrets.REGISTRY_NAME }}/content-server:$(echo $GITHUB_SHA | head -c7)
+
+    - name: Trigger deployment on droplet
+      env:
+        DROPLET_ID: ${{ secrets.DROPLET_ID }}
+      run: |
+        doctl compute ssh $DROPLET_ID -- "sudo -u deployer /home/deployer/deploy.sh"
