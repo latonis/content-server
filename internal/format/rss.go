@@ -1,8 +1,8 @@
-package contentserver
+package format
 
-import contentserver "contentserver/internal/handlers"
+import "contentserver/internal/handlers"
 
-func genRSSFeed(posts map[string]contentserver.Post) string {
+func genRSSFeed(posts map[string]handlers.Post) string {
 	// RSS feed header
 
 	// RSS feed items

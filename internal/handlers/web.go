@@ -1,4 +1,4 @@
-package contentserver
+package handlers
 
 import (
 	"slices"

@@ -1,4 +1,4 @@
-package contentserver
+package format
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"os"
 	"sort"
 
-	contentserver "contentserver/internal/handlers"
+	"contentserver/internal/handlers"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/ast"
@@ -49,8 +49,8 @@ func getHTML(markdown []byte) (template.HTML, error) {
 	return template.HTML(htmlBytes), nil
 }
 
-func GetPosts(postsDir string) (map[string]contentserver.Post, error) {
-	posts := make(map[string]contentserver.Post)
+func GetPosts(postsDir string) (map[string]handlers.Post, error) {
+	posts := make(map[string]handlers.Post)
 	files, err := os.ReadDir(postsDir)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read posts directory %s: %w", postsDir, err)
@@ -72,25 +72,25 @@ func GetPosts(postsDir string) (map[string]contentserver.Post, error) {
 	return posts, nil
 }
 
-func GetPost(postsDir, slug string) (contentserver.Post, error) {
+func GetPost(postsDir, slug string) (handlers.Post, error) {
 	meta, err := GetMeta(fmt.Sprintf("%s/%s/meta.yaml", postsDir, slug))
 	if err != nil {
-		return contentserver.Post{}, fmt.Errorf("failed to get metadata for post %s: %w", slug, err)
+		return handlers.Post{}, fmt.Errorf("failed to get metadata for post %s: %w", slug, err)
 	}
 
 	body, err := GetBody(fmt.Sprintf("%s/%s/post.md", postsDir, slug))
 	if err != nil {
-		return contentserver.Post{}, fmt.Errorf("failed to get body for post %s: %w", slug, err)
+		return handlers.Post{}, fmt.Errorf("failed to get body for post %s: %w", slug, err)
 	}
 
-	return contentserver.Post{
+	return handlers.Post{
 		Slug: slug,
 		Meta: *meta,
 		Body: body,
 	}, nil
 }
 
-func GetYARAPosts(posts []contentserver.Post) []contentserver.Post {
+func GetYARAPosts(posts []handlers.Post) []handlers.Post {
 	sort.SliceStable(posts, func(i, j int) bool {
 		return posts[i].Meta.Date.Time.After(posts[j].Meta.Date.Time)
 	})
@@ -105,13 +105,13 @@ func GetBody(path string) (template.HTML, error) {
 	return getHTML(data)
 }
 
-func GetMeta(path string) (*contentserver.PostMeta, error) {
+func GetMeta(path string) (*handlers.PostMeta, error) {
 	data, err := readFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read metadata file %s: %w", path, err)
 	}
 
-	var meta contentserver.PostMeta
+	var meta handlers.PostMeta
 	if err := yaml.Unmarshal(data, &meta); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal YAML from %s: %w", path, err)
 	}
