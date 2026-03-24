@@ -32,6 +32,7 @@ jobs:
         DROPLET_ID: ${{ secrets.DROPLET_ID }}
         SSH_KEY: ${{ secrets.SSH_KEY }}
       run: |
-        eval "$(ssh-agent -s)"
-        ssh-add - <<< "$SSH_KEY"
-        doctl compute ssh $DROPLET_ID --ssh-user deployer -- "/home/deployer/deploy.sh"
+        echo "$SSH_KEY" > $GITHUB_WORKSPACE/deploy_key
+        chmod 600 $GITHUB_WORKSPACE/deploy_key
+        doctl compute ssh $DROPLET_ID --ssh-user deployer --ssh-key-path $GITHUB_WORKSPACE/deploy_key --ssh-command "/home/deployer/deploy.sh"
+        rm $GITHUB_WORKSPACE/deploy_key
